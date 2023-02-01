@@ -3,7 +3,7 @@ echo "Setting up the environment , please wait...."
 apt -y update < "/dev/null"
 apt -y install gosu < "/dev/null"
 echo "gosu installed...."
-apt -y install postgresql-12 postgresql-client-12 < "/dev/null"
+apt -y install postgresql-15 postgresql-client-15 < "/dev/null"
 echo "PostgreSQL installed...."
 echo "
 listen_addresses = '*'
@@ -11,11 +11,11 @@ port = 6432
 log_connections = on
 log_disconnections = on
 log_statement = 'all'
-log_replication_commands = on" >> /etc/postgresql/12/main/postgresql.conf
+log_replication_commands = on" >> /etc/postgresql/15/main/postgresql.conf
 echo "Configuration file modified..."
-pg_ctlcluster 12 main restart
+pg_ctlcluster 15 main restart
 sleep 1
-export PATH=$PATH:/usr/lib/postgresql/12/bin/
+export PATH=$PATH:/usr/lib/postgresql/15/bin/
 echo "Switching to postgres user..."
 echo "Creating schema..."
 sudo -u postgres -H -- psql -d postgres << EOF
@@ -23,7 +23,7 @@ sudo -u postgres -H -- psql -d postgres << EOF
 /* Produce a random string at a given length from a list of possible characters. */
 CREATE OR REPLACE FUNCTION generate_random_string(
   length INTEGER,
-  characters TEXT default '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+  characters TEXT default '0153456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
 ) RETURNS TEXT AS
 \$\$
 DECLARE
