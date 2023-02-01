@@ -1,9 +1,18 @@
-sudo -i
 echo "Setting up the environment , please wait...."
-apt -y update < "/dev/null"
+apt -y update && apt -y upgrade < "/dev/null"
+apt -y install gnupg2 wget vim  < "/dev/null"
+#apt -y update < "/dev/null"
 apt -y install gosu < "/dev/null"
 echo "gosu installed...."
-apt -y install postgresql-15 postgresql-client-15 < "/dev/null"
+apt-cache search postgresql | grep postgresql
+echo "cache postgresql"
+sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+echo "add postgresql to repo"
+wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+echo "mport the GPG signing key for the repository."
+apt -y update
+echo "update your APT package list"
+apt -y install postgresql-14 postgresql-client-14 < "/dev/null"
 echo "PostgreSQL installed...."
 echo "
 listen_addresses = '*'
@@ -11,11 +20,11 @@ port = 6432
 log_connections = on
 log_disconnections = on
 log_statement = 'all'
-log_replication_commands = on" >> /etc/postgresql/15/main/postgresql.conf
+log_replication_commands = on" >> /etc/postgresql/14/main/postgresql.conf
 echo "Configuration file modified..."
-pg_ctlcluster 15 main restart
+pg_ctlcluster 14 main restart
 sleep 1
-export PATH=$PATH:/usr/lib/postgresql/15/bin/
+export PATH=$PATH:/usr/lib/postgresql/14/bin/
 echo "Switching to postgres user..."
 echo "Creating schema..."
 sudo -u postgres -H -- psql -d postgres << EOF
@@ -23,7 +32,7 @@ sudo -u postgres -H -- psql -d postgres << EOF
 /* Produce a random string at a given length from a list of possible characters. */
 CREATE OR REPLACE FUNCTION generate_random_string(
   length INTEGER,
-  characters TEXT default '0153456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+  characters TEXT default '0143456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
 ) RETURNS TEXT AS
 \$\$
 DECLARE
