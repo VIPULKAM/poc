@@ -1,8 +1,8 @@
 echo "Setting up the environment , please wait...."
-apt -y update < "/dev/null"
-apt -y install gosu < "/dev/null"
+sudo apt -y update < "/dev/null"
+sudo apt -y install gosu < "/dev/null"
 echo "gosu installed...."
-apt -y install postgresql-12 postgresql-client-12 < "/dev/null"
+sudo apt -y install postgresql-12 postgresql-client-12 < "/dev/null"
 echo "PostgreSQL installed...."
 echo "
 listen_addresses = '*'
@@ -12,7 +12,7 @@ log_disconnections = on
 log_statement = 'all'
 log_replication_commands = on" >> /etc/postgresql/12/main/postgresql.conf
 echo "Configuration file modified..."
-pg_ctlcluster 12 main restart
+sudo pg_ctlcluster 12 main restart
 sleep 1
 export PATH=$PATH:/usr/lib/postgresql/12/bin/
 echo "Switching to postgres user..."
@@ -78,5 +78,4 @@ FROM
 COMMIT;
 VACUUM ANALYZE shorturl;
 EOF
-psql postgres --pset=pager=off
 sudo -u postgres -H -- psql -d postgres --pset=pager=off
